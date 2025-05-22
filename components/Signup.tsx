@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Input } from "./ui/input";
 
 export default function Signup() {
     const [email, setEmail] = useState("");
@@ -57,11 +58,11 @@ export default function Signup() {
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                             <Mail className="w-4 h-4" />
                         </span>
-                        <input
+                        <Input
                             placeholder="Email"
                             type="email"
                             value={email}
-                            className="w-full pl-10 pr-3 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200 bg-gray-50 text-sm font-medium"
+                            className="w-full pl-10 pr-3 py-4 rounded-xl border border-gray-200 text-sm font-medium"
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
@@ -69,11 +70,11 @@ export default function Signup() {
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                             <LockIcon className="w-4 h-4" />
                         </span>
-                        <input
+                        <Input
                             placeholder="Password"
                             type="password"
                             value={password}
-                            className="w-full pl-10 pr-10 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200 bg-gray-50 text-sm font-medium"
+                            className="w-full pl-10 pr-3 py-4 rounded-xl border border-gray-200 text-sm font-medium"
                             onChange={(e) => setPassword(e.target.value)}
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer text-xs select-none"></span>

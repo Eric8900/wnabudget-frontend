@@ -18,18 +18,41 @@ export function clearAuth() {
   localStorage.removeItem("user_id");
 }
 
-export function isAuthenticated(): boolean {
+export async function isAuthenticated(): Promise<boolean> {
   const token = getAccessToken();
   const userId = getUserId();
   if (!token || !userId) return false;
 
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const now = Math.floor(Date.now() / 1000);
-    return payload.exp > now;
+    const res = await fetch(`${API_BASE}/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return res.status === 200;
   } catch {
     return false;
   }
+}
+
+export async function fetchCurrentUser(): Promise<{
+    passwordHash: string; email: string 
+} | null> {
+  const token = getAccessToken();
+  const userId = getUserId();
+
+  if (!token || !userId) return null;
+
+  const res = await fetch(`${API_BASE}/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) return null;
+
+  return await res.json();
 }
 
 interface AuthResponse {
@@ -68,4 +91,17 @@ export async function signup(email: string, password: string): Promise<void> {
     const msg = await res.text();
     throw new Error(msg || "Signup failed");
   }
+}
+
+export async function deleteCurrentUser(): Promise<void> {
+  const token = getAccessToken();
+  const userId = getUserId();
+  if (!token || !userId) return;
+
+  await fetch(`${API_BASE}/users/${userId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }
