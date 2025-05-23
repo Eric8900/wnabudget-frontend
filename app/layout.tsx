@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from 'next-themes'
+import QueryProvider from "@/app/app/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 const font = Figtree({
@@ -63,7 +64,9 @@ export default function RootLayout({
         className={`${font.className} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <QueryProvider>
           {children}
+          </QueryProvider>
           <Toaster/>
         </ThemeProvider>
       </body>

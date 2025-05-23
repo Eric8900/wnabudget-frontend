@@ -15,23 +15,25 @@ import { Pencil, Trash } from "lucide-react";
 import EditAccountDialog from "./EditAccountDialog";
 import { Account } from "@/models/types";
 import { api } from "@/lib/middleware/api";
+import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
 
 interface ManageAccountsProps {
   accounts: Account[];
   onRefresh: () => void;
-  refreshMoneyLeft?: () => void;
 }
 
-export default function ManageAccounts({ accounts, onRefresh, refreshMoneyLeft }: ManageAccountsProps) {
+export default function ManageAccounts({ accounts, onRefresh }: ManageAccountsProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const userId = accounts[0]?.user_id || "";
+  const { refresh } = useMoneyLeftActions(userId);
 
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/accounts/${id}`);
       onRefresh();
-      refreshMoneyLeft?.();
+      refresh();
     } catch (err) {
       console.error("Failed to delete account", err);
     } finally {

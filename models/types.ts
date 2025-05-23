@@ -27,9 +27,41 @@ export interface Category {
   name: string;
   month: number;
   year: number;
-  budgeted_amount: number;
+  budgetedAmount: string;
+  activity: string;
+  available?: string;
+}
+
+// CLIENT SIDE DATA TYPES FOR BUDGET DATA TABLE
+export interface SubCategoryRow {
+  id: string;
+  name: string;
+  budgeted: number;
   activity: number;
-  available?: number;
+  available: number;
+}
+
+export interface MasterCategoryRow {
+  id: string;
+  name: string;
+  totals: { budgeted: number; activity: number; available: number };
+  subRows: SubCategoryRow[];
+}
+// models/types.ts
+export interface CategoryPatch {
+  id: string;
+  user_id: string;
+  group_id: string;
+  name?: string;
+  budgetedAmount?: string;
+  month: number;
+  year: number;
+}
+
+export interface CategoryGroupPatch {
+  id: string;
+  user_id: string;
+  name?: string;
 }
 
 export interface Transaction {

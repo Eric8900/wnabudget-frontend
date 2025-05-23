@@ -18,19 +18,23 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CategoryGroup } from "@/models/types";
 import { Slider } from "../ui/slider";
+import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
+import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
 
 interface CreateCategoryProps {
   userId: string;
   moneyLeftToAssign: number;
   onCreated?: () => void;
 }
-
+// STAYS in /app page
 export default function CreateCategory({ userId, onCreated, moneyLeftToAssign }: CreateCategoryProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [groups, setGroups] = useState<CategoryGroup[]>([]);
   const [groupId, setGroupId] = useState<string>("");
   const [name, setName] = useState("");
   const [budgetedAmount, setBudgetedAmount] = useState<number>(0);
+  const {refresh} = useMoneyLeftActions(userId);
+  const refreshAllBudgets = useRefreshAllBudgets(userId);
 
   useEffect(() => {
     if (openDialog) {
@@ -65,6 +69,8 @@ export default function CreateCategory({ userId, onCreated, moneyLeftToAssign }:
       setName("");
       setGroupId("");
       setBudgetedAmount(0);
+      refresh();
+      refreshAllBudgets();
       onCreated?.();
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Failed to create category");

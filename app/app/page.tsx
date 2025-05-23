@@ -4,36 +4,25 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserId, isAuthenticated } from "@/lib/middleware/auth";
 import AppSidebar from "@/components/app/AppSidebar";
 import CreateCategory from "@/components/app/CreateCategory";
-import { api } from "@/lib/middleware/api";
-import { toast } from "sonner";
+import BudgetTable from "@/components/app/budget-table/data-table";
+import { useMoneyLeft } from "@/hooks/use-money-left";
+import CreateCategoryGroup from "@/components/app/CreateCategoryGroup";
 
 export default function Home() {
   const [user, setUser] = useState<boolean>(false);
   const router = useRouter();
   const userId = getUserId();
-  const [moneyLeftToAssign, setMoneyLeftToAssign] = useState<number>(0);
 
-  const fetchMoneyLeftToAssign = async () => {
-    try {
-      const money = await api.get<number>(`/categories/left-to-assign/${userId}`);
-      setMoneyLeftToAssign(money);
-    } catch {
-      toast.error("Failed to fetch available budget");
-    }
-  };
+  const { data: moneyLeftToAssign = 0 } = useMoneyLeft(userId);
 
-  useEffect(() => {
-    if (userId) {
-      fetchMoneyLeftToAssign();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
-
+  const params = useSearchParams();
+  const month  = Number(params.get('month') ?? new Date().getMonth() + 1);
+  const year  = Number(params.get('year') ?? new Date().getFullYear());
 
   useEffect(() => {
     async function loadUser() {
@@ -52,13 +41,14 @@ export default function Home() {
   return (
     <div>
       <SidebarProvider>
-        <AppSidebar user={user} refreshMoneyLeft={fetchMoneyLeftToAssign} />
+        <AppSidebar user={user} />
 
         {/* Main content */}
-        <main className="flex-1 min-w-100vh">
+        <main className="flex flex-col w-full">
           {/* Header */}
           <div className="flex lg:flex-row flex-col px-4 py-2 bottom-0 lg:gap-10 gap-5">
             <SidebarTrigger className="h-4 w-4 mt-2" />
+            <CreateCategoryGroup userId={userId!} />
             <div className={`flex items-center justify-between ${moneyLeftToAssign < 0 ? "bg-red-300" : "bg-emerald-200"} gap-10 rounded-xl p-4`}>
               <div>
                 <span className="font-extrabold text-xl">${moneyLeftToAssign.toLocaleString("en-US", {
@@ -69,10 +59,10 @@ export default function Home() {
               </div>
               <CreateCategory
                 userId={userId!}
-                moneyLeftToAssign={moneyLeftToAssign}
-                onCreated={fetchMoneyLeftToAssign} />
+                moneyLeftToAssign={moneyLeftToAssign}/>
             </div>
           </div>
+          <BudgetTable userId={userId as string} month={month} year={year} moneyLeftToAssign={moneyLeftToAssign} />
         </main>
       </SidebarProvider>
     </div>

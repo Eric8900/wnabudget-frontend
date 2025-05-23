@@ -18,16 +18,14 @@ import { Account } from "@/models/types";
 import { api } from "@/lib/middleware/api";
 import AddAccount from "./accounts/AddAccount";
 import { AccountsSkeleton } from "./accounts/AccountsSkeleton";
-import CreateCategoryGroup from "@/components/app/CreateCategoryGroup";
 import ManageAccounts from "./accounts/ManageAccounts";
 
 interface AppSidebarProps {
   user: boolean;
   refreshKey?: number;
-  refreshMoneyLeft?: () => void;
 }
 
-function AppSidebar({ user, refreshKey, refreshMoneyLeft }: AppSidebarProps) {
+function AppSidebar({ user, refreshKey }: AppSidebarProps) {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const userId = getUserId();
@@ -72,7 +70,7 @@ function AppSidebar({ user, refreshKey, refreshMoneyLeft }: AppSidebarProps) {
             </Link>
 
             {/* Manage Accounts Button */}
-            <ManageAccounts accounts={accounts} onRefresh={fetchAccounts} refreshMoneyLeft={refreshMoneyLeft} />
+            <ManageAccounts accounts={accounts} onRefresh={fetchAccounts} />
 
           </div>
 
@@ -98,10 +96,7 @@ function AppSidebar({ user, refreshKey, refreshMoneyLeft }: AppSidebarProps) {
               )}
 
               {/* Add Account Button */}
-              <AddAccount userId={userId!} refreshAccounts={fetchAccounts} refreshMoneyLeft={refreshMoneyLeft} />
-
-              {/* Create Category Group Button */}
-              <CreateCategoryGroup userId={userId!} />
+              <AddAccount userId={userId!} refreshAccounts={fetchAccounts} />
 
             </SidebarGroupContent>
           </SidebarGroup>

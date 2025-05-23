@@ -15,15 +15,17 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/middleware/api";
 import { toast } from "sonner";
+import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
 
 interface CreateCategoryGroupProps {
   userId: string;
   onCreated?: () => void;
 }
-
+// STAYS in /app page
 export default function CreateCategoryGroup({ userId, onCreated }: CreateCategoryGroupProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [name, setName] = useState("");
+  const refresh = useRefreshAllBudgets(userId);
 
   const handleCreateGroup = async () => {
     try {
@@ -36,6 +38,7 @@ export default function CreateCategoryGroup({ userId, onCreated }: CreateCategor
       setOpenDialog(false);
       setName("");
       onCreated?.();
+      refresh();
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Failed to create category group");
     }

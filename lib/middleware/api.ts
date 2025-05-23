@@ -1,4 +1,4 @@
-import { clearAuth, getAccessToken } from "./auth";
+import { getAccessToken } from "./auth";
 
 type RequestOptions = RequestInit & {
   headers?: Record<string, string>;
@@ -25,12 +25,6 @@ async function request<T>(url: string, options: RequestOptions = {}): Promise<T>
     headers,
   });
 
-  if (res.status === 401) {
-    clearAuth();
-    window.location.href = "/login";
-    throw new Error("Unauthorized");
-  }
-
   if (!res.ok) {
     const error = await res.text();
     throw new Error(error || res.statusText);
@@ -54,4 +48,10 @@ export const api = {
       auth,
     }),
   delete: <T>(url: string, auth = true) => request<T>(url, { method: "DELETE", auth }),
+  patch: <T>(url: string, data: unknown, auth = true) =>
+    request<T>(url, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      auth,
+    }),
 };
