@@ -8,5 +8,6 @@
 - React
 - TailwindCSS
 - TypeScript
+- Tanstack Query
 - Framer Motion
 - Shadcn
