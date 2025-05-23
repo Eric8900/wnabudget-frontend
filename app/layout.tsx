@@ -1,31 +1,32 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from 'next-themes'
+import { Toaster } from "@/components/ui/sonner";
 
-const font = Outfit({
-  weight: '400',
+const font = Figtree({
+  weight: 'variable',
   subsets: ['latin'],
 })
 
 export const metadata: Metadata = {
   title: {
-    default: "My App",
-    template: "%s | App",
+    default: "WNAB",
+    template: "%s | WNAB",
   },
   description: "The best app ever.",
   metadataBase: new URL("https://vercel.app"),
   openGraph: {
-    title: "App",
+    title: "WNAB",
     description: "The best app ever.",
     url: "https://vercel.app",
-    siteName: "App",
+    siteName: "WNAB",
     images: [
       {
         url: "https://vercel.app",
         width: 1000,
         height: 640,
-        alt: "App",
+        alt: "WNAB",
       },
     ],
     locale: "en_US",
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "My App",
+    title: "WNAB",
     description: "The best app ever.",
     images: [""],
     creator: "@ericchen890",
@@ -48,6 +49,7 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-touch-icon.png",
   },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -62,6 +64,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <Toaster/>
         </ThemeProvider>
       </body>
     </html>

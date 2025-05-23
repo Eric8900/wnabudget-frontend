@@ -16,7 +16,11 @@ import { Label } from "@/components/ui/label";
 import { fetchCurrentUser, deleteCurrentUser, clearAuth } from "@/lib/middleware/auth";
 import { useRouter } from "next/navigation";
 
-export default function Profile() {
+interface ProfileProps {
+  className?: string;
+}
+
+export default function Profile({ className }: ProfileProps) {
   const [email, setEmail] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
@@ -43,7 +47,7 @@ export default function Profile() {
     <>
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogTrigger asChild>
-          <span className="cursor-pointer text-text-foreground hover:text-accent transition-colors font-bold">Profile</span>
+          <span className={`cursor-pointer hover:text-accent transition-colors font-bold ${className}`}>Profile</span>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>

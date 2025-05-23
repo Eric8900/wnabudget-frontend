@@ -1,3 +1,5 @@
+import { User } from "@/models/types";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 export function getAccessToken(): string | null {
@@ -36,9 +38,7 @@ export async function isAuthenticated(): Promise<boolean> {
   }
 }
 
-export async function fetchCurrentUser(): Promise<{
-    passwordHash: string; email: string 
-} | null> {
+export async function fetchCurrentUser(): Promise<User | null> {
   const token = getAccessToken();
   const userId = getUserId();
 
@@ -52,7 +52,9 @@ export async function fetchCurrentUser(): Promise<{
 
   if (!res.ok) return null;
 
-  return await res.json();
+const user: User = await res.json();
+const { id, email, auth_provider } = user;
+return { id, email, auth_provider } as User;
 }
 
 interface AuthResponse {
@@ -96,6 +98,7 @@ export async function signup(email: string, password: string): Promise<void> {
 export async function deleteCurrentUser(): Promise<void> {
   const token = getAccessToken();
   const userId = getUserId();
+
   if (!token || !userId) return;
 
   await fetch(`${API_BASE}/users/${userId}`, {
