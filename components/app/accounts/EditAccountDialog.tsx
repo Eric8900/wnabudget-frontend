@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useAccountsActions } from "@/hooks/use-accounts";
 
 interface EditAccountDialogProps {
   account: Account;
@@ -22,6 +23,7 @@ interface EditAccountDialogProps {
 export default function EditAccountDialog({ account, onClose, onSaved }: EditAccountDialogProps) {
   const [name, setName] = useState(account.name);
   const [loading, setLoading] = useState(false);
+  const { refresh: refreshAccountsList} = useAccountsActions(account.user_id);
 
   const handleSave = async () => {
     setLoading(true);
@@ -30,7 +32,8 @@ export default function EditAccountDialog({ account, onClose, onSaved }: EditAcc
         ...account,
         name,
       });
-      onSaved();
+      onSaved?.();
+      refreshAccountsList();
     } catch (err) {
       console.error("Failed to update account", err);
     } finally {

@@ -16,18 +16,20 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/lib/middleware/api";
 import { toast } from "sonner";
 import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
+import { useAccountsActions } from "@/hooks/use-accounts";
 
 interface AddAccountProps {
   userId: string;
-  refreshAccounts?: () => void;
 }
 
-export default function AddAccount({ userId, refreshAccounts }: AddAccountProps) {
+export default function AddAccount({ userId }: AddAccountProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [name, setName] = useState("");
   const [type, setType] = useState("checking");
   const [balance, setBalance] = useState("0.00");
-  const { refresh } = useMoneyLeftActions(userId);
+  const { refresh: refreshMoneyLeft }  = useMoneyLeftActions(userId);
+  const { refresh: refreshAccountsList } = useAccountsActions(userId);
+
 
 
   const handleCreateAccount = async () => {
@@ -45,8 +47,8 @@ export default function AddAccount({ userId, refreshAccounts }: AddAccountProps)
       setType("checking");
       setBalance("0");
 
-      refreshAccounts?.();
-      refresh();
+      refreshAccountsList();
+      refreshMoneyLeft();
     } catch (err: unknown) {
       const errorMessage =
         err && typeof err === "object" && "message" in err

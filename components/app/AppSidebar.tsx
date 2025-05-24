@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -14,37 +13,18 @@ import { clearAuth, getUserId } from "@/lib/middleware/auth";
 import Profile from "@/components/Profile";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Account } from "@/models/types";
-import { api } from "@/lib/middleware/api";
 import AddAccount from "./accounts/AddAccount";
 import { AccountsSkeleton } from "./accounts/AccountsSkeleton";
 import ManageAccounts from "./accounts/ManageAccounts";
+import { useAccounts } from "@/hooks/use-accounts";
 
 interface AppSidebarProps {
   user: boolean;
-  refreshKey?: number;
 }
 
-function AppSidebar({ user, refreshKey }: AppSidebarProps) {
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [loading, setLoading] = useState(true);
+function AppSidebar({ user }: AppSidebarProps) {
   const userId = getUserId();
-
-  const fetchAccounts = async () => {
-    try {
-      const data = await api.get<Account[]>(`/accounts/user/${userId}`);
-      setAccounts(data);
-    } catch (err) {
-      console.error("Failed to fetch accounts:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAccounts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshKey]);
+  const { data: accounts = [], isLoading : loading } = useAccounts(userId);
 
   return (
     <div>
@@ -70,7 +50,7 @@ function AppSidebar({ user, refreshKey }: AppSidebarProps) {
             </Link>
 
             {/* Manage Accounts Button */}
-            <ManageAccounts accounts={accounts} onRefresh={fetchAccounts} />
+            <ManageAccounts accounts={accounts} />
 
           </div>
 
@@ -96,7 +76,7 @@ function AppSidebar({ user, refreshKey }: AppSidebarProps) {
               )}
 
               {/* Add Account Button */}
-              <AddAccount userId={userId!} refreshAccounts={fetchAccounts} />
+              <AddAccount userId={userId!} />
 
             </SidebarGroupContent>
           </SidebarGroup>

@@ -16,10 +16,12 @@ import EditAccountDialog from "./EditAccountDialog";
 import { Account } from "@/models/types";
 import { api } from "@/lib/middleware/api";
 import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
+import { useAccountsActions } from "@/hooks/use-accounts";
+import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
 
 interface ManageAccountsProps {
   accounts: Account[];
-  onRefresh: () => void;
+  onRefresh?: () => void;
 }
 
 export default function ManageAccounts({ accounts, onRefresh }: ManageAccountsProps) {
@@ -27,13 +29,17 @@ export default function ManageAccounts({ accounts, onRefresh }: ManageAccountsPr
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const userId = accounts[0]?.user_id || "";
-  const { refresh } = useMoneyLeftActions(userId);
+  const { refresh: refreshMoneyLeft } = useMoneyLeftActions(userId);
+  const { refresh: refreshAccountsList } = useAccountsActions(userId);
+  const refreshAllBudgets = useRefreshAllBudgets(userId);
 
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/accounts/${id}`);
-      onRefresh();
-      refresh();
+      onRefresh?.();
+      refreshMoneyLeft();
+      refreshAccountsList();
+      refreshAllBudgets();
     } catch (err) {
       console.error("Failed to delete account", err);
     } finally {
@@ -115,7 +121,7 @@ export default function ManageAccounts({ accounts, onRefresh }: ManageAccountsPr
           account={selectedAccount}
           onClose={() => setSelectedAccount(null)}
           onSaved={() => {
-            onRefresh();
+            onRefresh?.();
             setSelectedAccount(null);
           }}
         />

@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { api } from "@/lib/middleware/api";
 import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
 import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
+import { useAccountsActions } from "@/hooks/use-accounts";
 
 interface Category {
     id: string;
@@ -28,7 +29,7 @@ interface Category {
 interface AddTransactionProps {
     userId: string;
     accountId: string;
-    onCreated: () => void;
+    onCreated?: () => void;
 }
 
 export default function AddTransaction({ userId, accountId, onCreated }: AddTransactionProps) {
@@ -41,7 +42,8 @@ export default function AddTransaction({ userId, accountId, onCreated }: AddTran
     const [cleared, setCleared] = useState(false);
     const [isExpense, setIsExpense] = useState(true);
     const refreshAllBudgets = useRefreshAllBudgets(userId);
-    const moneyLeftActions = useMoneyLeftActions(userId);
+    const { refresh: refreshMoneyLeft } = useMoneyLeftActions(userId);
+    const { refresh: refreshAccountsList } = useAccountsActions(userId);
     
     useEffect(() => {
         if (openDialog) {
@@ -77,7 +79,8 @@ export default function AddTransaction({ userId, accountId, onCreated }: AddTran
             setCleared(false);
             onCreated?.();
             refreshAllBudgets();
-            moneyLeftActions.refresh();
+            refreshMoneyLeft();
+            refreshAccountsList();
         } catch (err: unknown) {
             toast.error(err instanceof Error ? err.message : "Failed to create transaction");
         }

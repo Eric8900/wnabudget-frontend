@@ -16,9 +16,6 @@ export default function Home() {
   const router = useRouter();
   const { account_id } = useParams();
   const userId = getUserId();
-  const [refreshKey, setRefreshKey] = useState(0);
-  
-  const triggerRefresh = () => {setRefreshKey((prev) => prev + 1)};
 
   useEffect(() => {
     async function loadUser() {
@@ -38,14 +35,14 @@ export default function Home() {
   return (
     <div>
       <SidebarProvider>
-          <AppSidebar user={user} refreshKey={refreshKey} />
+          <AppSidebar user={user} />
 
           {/* Main content */}
           <main className="flex-1 min-w-100vh">
             {/* Header */}
             <div className="flex px-4 py-2 bottom-0 gap-10">
               <SidebarTrigger className="h-4 w-4 mt-2" />
-              <AddTransaction userId={userId!} accountId={account_id as string} onCreated={triggerRefresh} />
+              <AddTransaction userId={userId!} accountId={account_id as string} />
             </div>
             <div className="p-6">
               <h1 className="text-2xl font-bold">Main Content</h1>
