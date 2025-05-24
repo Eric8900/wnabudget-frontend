@@ -9,6 +9,7 @@ import {
   CategoryGroup,
   MasterCategoryRow,
 } from "@/models/types";
+import { useMoneyLeftActions } from "./use-money-left-actions";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -81,28 +82,38 @@ export function useUpdateGroup(
 /* ------------------------------------------------------------------ */
 
 export function useDeleteGroup(
-  key: QueryKey,
+  key: QueryKey,            // ["budget", user_id, m, y]
+  userId: string,
 ): UseMutationResult<void, Error, { id: string }, Ctx> {
   const qc = useQueryClient();
+  const { refresh } = useMoneyLeftActions(userId);
 
   return useMutation<void, Error, { id: string }, Ctx>({
+    /* ---------- server call ---------- */
     mutationFn: ({ id }) => api.delete(`/category-groups/${id}`),
 
+    /* ---------- optimistic table update ---------- */
     onMutate: async ({ id }) => {
       await qc.cancelQueries({ queryKey: key });
 
       const previous = qc.getQueryData<MasterCategoryRow[]>(key);
-      qc.setQueryData(key, (old: MasterCategoryRow[] | undefined) => deleteGroup(old, id));
+      qc.setQueryData(key, (old: MasterCategoryRow[] | undefined) =>
+        deleteGroup(old, id),
+      );
 
       return { previous };
     },
 
-    onError: (_e, _v, ctx) => {
+    /* ---------- rollback on error ---------- */
+    onError: (_e, _vars, ctx) => {
       qc.setQueryData(key, ctx?.previous);
+      /* no need to touch Ready-to-Assign; we never changed it */
     },
 
+    /* ---------- always re-sync ---------- */
     onSettled: () => {
-      qc.invalidateQueries({ queryKey: key });
+      qc.invalidateQueries({ queryKey: key });  // refresh the table
+      refresh();                                // refetch Ready-to-Assign
     },
   });
 }

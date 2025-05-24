@@ -154,28 +154,52 @@ export function useUpdateCategory(
 /* ------------------------------------------------------------------ */
 
 export function useDeleteCategory(
-  key: QueryKey,
+  key: QueryKey,         // ["budget", user_id, m, y]
+  userId: string,
 ): UseMutationResult<void, Error, { id: string }, Ctx> {
   const qc = useQueryClient();
+  const { adjust } = useMoneyLeftActions(userId);
 
   return useMutation<void, Error, { id: string }, Ctx>({
+    /* -------- server call -------- */
     mutationFn: ({ id }) => api.delete(`/categories/${id}`),
 
+    /* -------- optimistic -------- */
     onMutate: async ({ id }) => {
       await qc.cancelQueries({ queryKey: key });
+
+      /* grab current cache */
       const previous = qc.getQueryData<MasterCategoryRow[]>(key);
+
+      /* find the old budgeted value so we can credit it back */
+      const oldBudgeted =
+        previous
+          ?.flatMap((g) => g.subRows)
+          .find((s) => s.id === id)?.budgeted ?? 0;
+
+      /* update the table cache */
       qc.setQueryData(key, (old: MasterCategoryRow[] | undefined) =>
         deleteCategory(old, id),
       );
-      return { previous };
+
+      /* return the money to Ready-to-Assign */
+      adjust(oldBudgeted);
+
+      return { previous, delta: oldBudgeted };
     },
 
-    onError: (_e, _v, ctx) => {
-      qc.setQueryData(key, ctx?.previous);
+    /* -------- rollback on error -------- */
+    onError: (_e, _vars, ctx) => {
+      if (ctx) {
+        qc.setQueryData(key, ctx.previous);
+        adjust(-ctx.delta!);             // undo the earlier credit
+      }
     },
 
+    /* -------- always re-sync -------- */
     onSettled: () => {
-      qc.invalidateQueries({ queryKey: key });
+      qc.invalidateQueries({ queryKey: key });                 // refresh table
+      qc.invalidateQueries({ queryKey: moneyLeftKey(userId) }); // refresh RTA
     },
   });
 }

@@ -33,7 +33,8 @@ export default function BudgetTable({
         year,
     });
 
-    if (isLoading) return <TableSkeleton />;
+    if (isLoading)
+        return <TableSkeleton />;
 
     if (isError)
         return (
@@ -43,9 +44,9 @@ export default function BudgetTable({
         );
 
     return (
-        <div className="w-full mx-auto sm:p-4 px-2">
-            <h2 className="py-4 text-xl font-semibold">
-                Budget for {month} / {year}
+        <div className="w-full mx-auto">
+            <h2 className="p-4 text-xl font-semibold">
+                Budget for {month}/{year}
             </h2>
 
             <div className="w-full bg-white">
@@ -96,7 +97,7 @@ function MasterRow({ row, userId, month, year, moneyLeftToAssign }: { row: Maste
                     <MoneyCell value={row.totals.activity} negativeIsRed />
                 </TableCell>
                 <TableCell className="text-right tabular-nums py-4">
-                    <MoneyCell value={row.totals.available} />
+                    <MoneyCell value={row.totals.available} negativeIsRed/>
                 </TableCell>
                 <TableCell className="text-right py-4">
                     <CategoryGroupActions
@@ -118,13 +119,13 @@ function MasterRow({ row, userId, month, year, moneyLeftToAssign }: { row: Maste
                             <MoneyCell value={sub.activity} negativeIsRed />
                         </TableCell>
                         <TableCell className="text-right">
-                            <MoneyCell value={sub.available} />
+                            <MoneyCell value={sub.available} negativeIsRed/>
                         </TableCell>
                         <TableCell className="text-right">
                             <CategoryActions
                                 cat={{ id: sub.id, name: sub.name, budgeted: sub.budgeted }}
                                 rqKey={["budget", userId, month, year]}
-                                moneyLeftToAssign={moneyLeftToAssign}
+                                moneyLeftToAssign={moneyLeftToAssign + sub.budgeted}
                             />
                         </TableCell>
                     </TableRow>
@@ -157,10 +158,39 @@ function MoneyCell({
 // skeleton loading
 function TableSkeleton() {
     return (
-        <div className="space-y-2 p-4">
-            {[...Array(6)].map((_, i) => (
-                <Skeleton key={i} className="h-6 w-full bg-muted" />
-            ))}
+        <div className="w-full bg-white overflow-hidden">
+            <div className="space-y-3">
+                {[...Array(4)].map((_, i) => (
+                    <div key={i}>
+                        {/* Master Row */}
+                        <div className="flex items-center py-4 px-2 bg-muted/50 w-full">
+                            <Skeleton className="h-4 w-4 mr-3" />
+                            <Skeleton className="h-5 w-40" />
+                            <div className="ml-auto flex items-center gap-8">
+                                <Skeleton className="h-5 w-10 hidden md:block" />
+                                <Skeleton className="h-5 w-10 hidden md:block" />
+                                <Skeleton className="h-5 w-10" />
+                                <Skeleton className="h-5 w-6" />
+                            </div>
+                        </div>
+
+                        {/* Sub Rows */}
+                        <div className="ml-8 space-y-3 mt-3">
+                            {[...Array(3)].map((_, j) => (
+                                <div key={j} className="flex items-center py-2 px-2">
+                                    <Skeleton className="h-4 w-32" />
+                                    <div className="ml-auto flex items-center gap-8">
+                                        <Skeleton className="h-4 w-10 hidden md:block" />
+                                        <Skeleton className="h-4 w-10 hidden md:block" />
+                                        <Skeleton className="h-4 w-10" />
+                                        <Skeleton className="h-4 w-6" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

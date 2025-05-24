@@ -14,7 +14,7 @@ export default function OAuthSuccessPage() {
         if (token && userId) {
             localStorage.setItem("access_token", token);
             localStorage.setItem("user_id", userId);
-            router.push("/");
+            router.push("/app");
         } else {
             router.push("/");
         }

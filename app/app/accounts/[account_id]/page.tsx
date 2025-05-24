@@ -33,6 +33,7 @@ export default function Home() {
     loadUser();
   }, [router]);
 
+  if (!userId || userId == null) return <div></div>;
 
   return (
     <div>

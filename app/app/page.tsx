@@ -38,13 +38,15 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!userId || userId == null) return <div></div>;
+
   return (
     <div>
       <SidebarProvider>
         <AppSidebar user={user} />
 
         {/* Main content */}
-        <main className="flex flex-col w-full">
+        <main className="flex flex-col w-full bg-white">
           {/* Header */}
           <div className="flex lg:flex-row flex-col px-4 py-2 bottom-0 lg:gap-10 gap-5">
             <SidebarTrigger className="h-4 w-4 mt-2" />

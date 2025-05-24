@@ -19,8 +19,8 @@ export default function CategoryGroupActions({
   groupName: string;
   rqKey: unknown[];
 }) {
-  const [open, setOpen] = useState(false);
-  const del = useDeleteGroup(rqKey);
+  const [open, setOpen] = useState(false); // 1 is user_id
+  const del = useDeleteGroup(rqKey, rqKey[1] as string);
 
   return (
     <>

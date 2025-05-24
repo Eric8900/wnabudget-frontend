@@ -33,7 +33,7 @@ export default function Login() {
     try {
         setError("");
         await login(email, password);
-        router.push("/");
+        router.push("/app");
     } catch (err: unknown) {
         console.error(err);
         if (err instanceof Error) {

@@ -1,3 +1,4 @@
+'use client';
 import { User } from "@/models/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -7,6 +8,7 @@ export function getAccessToken(): string | null {
 }
 
 export function getUserId(): string | null {
+  if (typeof window === 'undefined') return null;
   return localStorage.getItem("user_id");
 }
 
@@ -23,7 +25,7 @@ export function clearAuth() {
 export async function isAuthenticated(): Promise<boolean> {
   const token = getAccessToken();
   const userId = getUserId();
-  if (!token || !userId) return false;
+  if (!token || !userId || userId == null) return false;
 
   try {
     const res = await fetch(`${API_BASE}/users/${userId}`, {

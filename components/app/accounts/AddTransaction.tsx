@@ -17,6 +17,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { api } from "@/lib/middleware/api";
+import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
+import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
 
 interface Category {
     id: string;
@@ -38,7 +40,9 @@ export default function AddTransaction({ userId, accountId, onCreated }: AddTran
     const [memo, setMemo] = useState("");
     const [cleared, setCleared] = useState(false);
     const [isExpense, setIsExpense] = useState(true);
-
+    const refreshAllBudgets = useRefreshAllBudgets(userId);
+    const moneyLeftActions = useMoneyLeftActions(userId);
+    
     useEffect(() => {
         if (openDialog) {
             api.get<Category[]>(`/categories/user/${userId}`)
@@ -72,6 +76,8 @@ export default function AddTransaction({ userId, accountId, onCreated }: AddTran
             setMemo("");
             setCleared(false);
             onCreated?.();
+            refreshAllBudgets();
+            moneyLeftActions.refresh();
         } catch (err: unknown) {
             toast.error(err instanceof Error ? err.message : "Failed to create transaction");
         }

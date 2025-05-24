@@ -19,8 +19,8 @@ export default function CategoryActions({
   rqKey: unknown[];
   moneyLeftToAssign: number;
 }) {
-  const [open, setOpen] = useState(false);
-  const del = useDeleteCategory(rqKey);
+  const [open, setOpen] = useState(false); // 1 is user_id
+  const del = useDeleteCategory(rqKey, rqKey[1] as string);
 
   return (
     <>
