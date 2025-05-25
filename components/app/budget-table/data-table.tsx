@@ -11,10 +11,11 @@ import {
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useBudgetData } from "@/hooks/use-budget-data";
 import { MasterCategoryRow } from "@/models/types";
-import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 import CategoryGroupActions from "./CategoryGroupActions";
 import CategoryActions from "./CategoryActions";
+import { MonthNavigator } from "./MonthNavigator";
+import BudgetTableSkeleton from "./BudgetTableSkeleton";
 
 export default function BudgetTable({
     userId,
@@ -34,7 +35,7 @@ export default function BudgetTable({
     });
 
     if (isLoading)
-        return <TableSkeleton />;
+        return <BudgetTableSkeleton />;
 
     if (isError)
         return (
@@ -46,7 +47,9 @@ export default function BudgetTable({
     return (
         <div className="w-full mx-auto">
             <h2 className="p-4 text-xl font-semibold">
-                Budget for {month}/{year}
+                <div className="flex items-center justify-center gap-2 ml-4">
+                    <MonthNavigator/>
+                </div>
             </h2>
 
             <div className="w-full bg-white">
@@ -62,6 +65,13 @@ export default function BudgetTable({
                     </TableHeader>
 
                     <TableBody>
+                        {(data!.length === 0 || data === null) && (
+                            <TableRow>
+                                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                                    Create a Category Group to begin.
+                                </TableCell>
+                            </TableRow>
+                        )}
                         {data!.map((row) => (
                             <MasterRow key={row.id} row={row} userId={userId} month={month} year={year} moneyLeftToAssign={moneyLeftToAssign} />
                         ))}
@@ -160,48 +170,6 @@ function MoneyCell({
     return (
         <div className={`text-right tabular-nums ${color}`}>
             {formatted}
-        </div>
-    );
-}
-
-// --------------------------
-// SKELETON LOADING
-// --------------------------
-function TableSkeleton() {
-    return (
-        <div className="w-full bg-white overflow-hidden">
-            <div className="space-y-3">
-                {[...Array(4)].map((_, i) => (
-                    <div key={i}>
-                        {/* Master Row */}
-                        <div className="flex items-center py-4 px-2 bg-muted/50 w-full">
-                            <Skeleton className="h-4 w-4 mr-3" />
-                            <Skeleton className="h-5 w-40" />
-                            <div className="ml-auto flex items-center gap-8">
-                                <Skeleton className="h-5 w-10 hidden md:block" />
-                                <Skeleton className="h-5 w-10 hidden md:block" />
-                                <Skeleton className="h-5 w-10" />
-                                <Skeleton className="h-5 w-6" />
-                            </div>
-                        </div>
-
-                        {/* Sub Rows */}
-                        <div className="ml-8 space-y-3 mt-3">
-                            {[...Array(3)].map((_, j) => (
-                                <div key={j} className="flex items-center py-2 px-2">
-                                    <Skeleton className="h-4 w-32" />
-                                    <div className="ml-auto flex items-center gap-8">
-                                        <Skeleton className="h-4 w-10 hidden md:block" />
-                                        <Skeleton className="h-4 w-10 hidden md:block" />
-                                        <Skeleton className="h-4 w-10" />
-                                        <Skeleton className="h-4 w-6" />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 }

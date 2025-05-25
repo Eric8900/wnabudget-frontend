@@ -18,11 +18,12 @@ import { toast } from "sonner";
 import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
 
 interface CreateCategoryGroupProps {
+  className: string;
   userId: string;
   onCreated?: () => void;
 }
 // STAYS in /app page
-export default function CreateCategoryGroup({ userId, onCreated }: CreateCategoryGroupProps) {
+export default function CreateCategoryGroup({ className, userId, onCreated }: CreateCategoryGroupProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [name, setName] = useState("");
   const refresh = useRefreshAllBudgets(userId);
@@ -47,7 +48,7 @@ export default function CreateCategoryGroup({ userId, onCreated }: CreateCategor
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="default" className="text-sm">Category Group +</Button>
+        <Button variant="default" className={`text-lg ${className}`}>Category Group +</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[500px] bg-white">

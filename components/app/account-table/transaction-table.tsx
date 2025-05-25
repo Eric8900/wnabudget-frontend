@@ -8,7 +8,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, Trash2 } from "lucide-react";
 import React from "react";
 import { useTransactions, useTransactionsActions } from "@/hooks/use-transactions";
@@ -17,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PeekDialog from "./PeekDialog";
+import TransactionTableSkeleton from "./TransactionTableSkeleton";
 
 interface TransactionsTableProps {
     userId: string;
@@ -26,7 +26,8 @@ interface TransactionsTableProps {
 export default function TransactionsTable({ userId, accountId }: TransactionsTableProps) {
     const { data, isLoading, isError, error } = useTransactions(userId, accountId);
 
-    if (isLoading) return <TableSkeleton />;
+    if (isLoading) 
+        return <TransactionTableSkeleton />;
     if (isError)
         return (
             <p className="text-destructive p-4">
@@ -51,6 +52,13 @@ export default function TransactionsTable({ userId, accountId }: TransactionsTab
                     </TableHeader>
 
                     <TableBody>
+                        {(data!.length === 0 || data === null) && (
+                            <TableRow>
+                                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                                    Add transactions to see them here.
+                                </TableCell>
+                            </TableRow>
+                        )}
                         {data!.map((tx) => (
                             <TransactionRow key={tx.id} tx={tx} accountId={accountId} />
                         ))}
@@ -139,26 +147,4 @@ export function MoneyCell({
     const color = negativeIsRed && value < 0 ? "text-red-500" : value === 0 ? undefined : "text-emerald-500";
 
     return <span className={`tabular-nums ${color}`}>{formatted}</span>;
-}
-
-// --------------------------
-// SKELETON PLACEHOLDER
-// --------------------------
-function TableSkeleton() {
-    return (
-        <div className="w-full bg-white overflow-hidden">
-            <div className="space-y-3 p-4">
-                {[...Array(5)].map((_, i) => (
-                    <div key={i} className="flex items-center gap-4">
-                        <Skeleton className="h-5 w-24" />
-                        <Skeleton className="h-5 w-40 flex-1" />
-                        <Skeleton className="h-5 w-40 hidden md:block" />
-                        <Skeleton className="h-5 w-16 hidden md:block" />
-                        <Skeleton className="h-4 w-4" />
-                        <Skeleton className="h-4 w-4" />
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
 }
