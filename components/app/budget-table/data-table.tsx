@@ -73,7 +73,10 @@ export default function BudgetTable({
 }
 
 // ─────────────────────────────────────────────────────────────
-
+// --------------------------
+// CATEGORY GROUPS
+// --------------------------
+// ─────────────────────────────────────────────────────────────
 function MasterRow({ row, userId, month, year, moneyLeftToAssign }: { row: MasterCategoryRow; userId: string; month: number; year: number, moneyLeftToAssign: number }) {
     const [open, setOpen] = React.useState(true);
 
@@ -97,7 +100,7 @@ function MasterRow({ row, userId, month, year, moneyLeftToAssign }: { row: Maste
                     <MoneyCell value={row.totals.activity} negativeIsRed />
                 </TableCell>
                 <TableCell className="text-right tabular-nums py-4">
-                    <MoneyCell value={row.totals.available} negativeIsRed/>
+                    <MoneyCell value={row.totals.available} negativeIsRed />
                 </TableCell>
                 <TableCell className="text-right py-4">
                     <CategoryGroupActions
@@ -108,6 +111,9 @@ function MasterRow({ row, userId, month, year, moneyLeftToAssign }: { row: Maste
                 </TableCell>
             </TableRow>
 
+            {/* // --------------------------
+            // CATEGORIES
+            // -------------------------- */}
             {open &&
                 row.subRows.map((sub) => (
                     <TableRow key={sub.id}>
@@ -119,7 +125,7 @@ function MasterRow({ row, userId, month, year, moneyLeftToAssign }: { row: Maste
                             <MoneyCell value={sub.activity} negativeIsRed />
                         </TableCell>
                         <TableCell className="text-right">
-                            <MoneyCell value={sub.available} negativeIsRed/>
+                            <MoneyCell value={sub.available} negativeIsRed />
                         </TableCell>
                         <TableCell className="text-right">
                             <CategoryActions
@@ -134,6 +140,9 @@ function MasterRow({ row, userId, month, year, moneyLeftToAssign }: { row: Maste
     );
 }
 
+// --------------------------
+// MONEY CELL HELPER
+// --------------------------
 function MoneyCell({
     value,
     negativeIsRed = false,
@@ -155,7 +164,9 @@ function MoneyCell({
     );
 }
 
-// skeleton loading
+// --------------------------
+// SKELETON LOADING
+// --------------------------
 function TableSkeleton() {
     return (
         <div className="w-full bg-white overflow-hidden">

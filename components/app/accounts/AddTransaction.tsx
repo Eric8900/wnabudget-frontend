@@ -17,9 +17,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { api } from "@/lib/middleware/api";
-import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
-import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
 import { useAccountsActions } from "@/hooks/use-accounts";
+import { useTransactionsActions } from "@/hooks/use-transactions";
 
 interface Category {
     id: string;
@@ -41,9 +40,8 @@ export default function AddTransaction({ userId, accountId, onCreated }: AddTran
     const [memo, setMemo] = useState("");
     const [cleared, setCleared] = useState(false);
     const [isExpense, setIsExpense] = useState(true);
-    const refreshAllBudgets = useRefreshAllBudgets(userId);
-    const { refresh: refreshMoneyLeft } = useMoneyLeftActions(userId);
     const { refresh: refreshAccountsList } = useAccountsActions(userId);
+    const { refresh: refreshTransactions } = useTransactionsActions(userId, accountId);
     
     useEffect(() => {
         if (openDialog) {
@@ -78,9 +76,8 @@ export default function AddTransaction({ userId, accountId, onCreated }: AddTran
             setMemo("");
             setCleared(false);
             onCreated?.();
-            refreshAllBudgets();
-            refreshMoneyLeft();
             refreshAccountsList();
+            refreshTransactions();
         } catch (err: unknown) {
             toast.error(err instanceof Error ? err.message : "Failed to create transaction");
         }

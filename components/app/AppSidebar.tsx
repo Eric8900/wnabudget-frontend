@@ -17,6 +17,8 @@ import AddAccount from "./accounts/AddAccount";
 import { AccountsSkeleton } from "./accounts/AccountsSkeleton";
 import ManageAccounts from "./accounts/ManageAccounts";
 import { useAccounts } from "@/hooks/use-accounts";
+import { useRefreshAllBudgets } from "@/hooks/use-budget-data";
+import { useMoneyLeftActions } from "@/hooks/use-money-left-actions";
 
 interface AppSidebarProps {
   user: boolean;
@@ -25,6 +27,8 @@ interface AppSidebarProps {
 function AppSidebar({ user }: AppSidebarProps) {
   const userId = getUserId();
   const { data: accounts = [], isLoading : loading } = useAccounts(userId);
+  const refreshAllBudgets  = useRefreshAllBudgets(userId);
+  const { refresh: refreshMoneyLeft } = useMoneyLeftActions(userId);
 
   return (
     <div>
@@ -44,7 +48,13 @@ function AppSidebar({ user }: AppSidebarProps) {
           {/* Budget Static Button */}
           <div className="p-2 gap-4 flex flex-col">
             <Link href="/app">
-              <button className="cursor-pointer w-full hover:bg-muted transition-all border border-border rounded-md py-2 px-4 font-medium text-left">
+              <button 
+              className="cursor-pointer w-full hover:bg-muted transition-all border border-border rounded-md py-2 px-4 font-medium text-left" 
+              onClick={() => {
+                refreshAllBudgets();
+                refreshMoneyLeft();
+              }}>
+                {/* REFRESH BUDGETS ON CLICK so that only when necessary, refresh it */}
                 Budget
               </button>
             </Link>

@@ -75,3 +75,15 @@ export interface Transaction {
   date: string; // ISO date format (YYYY-MM-DD)
   cleared: boolean;
 }
+
+export interface TransactionTable {
+  id: string; // UUID
+  user_id: string; // UUID
+  account_name: string;
+  category_name: string;
+  amount: number;
+  payee?: string | null;
+  memo?: string | null;
+  date: string; // ISO date format (YYYY-MM-DD)
+  cleared: boolean;
+}

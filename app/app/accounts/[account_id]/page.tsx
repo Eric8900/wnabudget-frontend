@@ -10,6 +10,7 @@ import { getUserId, isAuthenticated } from "@/lib/middleware/auth";
 import AppSidebar from "@/components/app/AppSidebar";
 import { useParams } from "next/navigation";
 import AddTransaction from "@/components/app/accounts/AddTransaction";
+import TransactionsTable from "@/components/app/account-table/transaction-table";
 
 export default function Home() {
   const [user, setUser] = useState<boolean>(false);
@@ -38,16 +39,13 @@ export default function Home() {
           <AppSidebar user={user} />
 
           {/* Main content */}
-          <main className="flex-1 min-w-100vh">
+          <main className="flex-1 min-w-100vh bg-white">
             {/* Header */}
             <div className="flex px-4 py-2 bottom-0 gap-10">
               <SidebarTrigger className="h-4 w-4 mt-2" />
               <AddTransaction userId={userId!} accountId={account_id as string} />
             </div>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold">Main Content</h1>
-              <p className="mt-2">This is the main content area of {account_id}.</p>
-            </div>
+            <TransactionsTable userId={userId} accountId={account_id as string} />
           </main>
       </SidebarProvider>
     </div>
