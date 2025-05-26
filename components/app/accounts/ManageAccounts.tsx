@@ -50,7 +50,11 @@ export default function ManageAccounts({ accounts, onRefresh }: ManageAccountsPr
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <button className="cursor-pointer w-full hover:bg-muted transition-all border border-border rounded-md py-2 px-4 font-medium text-left">Manage Accounts</button>
+        <Button
+        variant={"ghost"}
+        className="cursor-pointer w-full py-2 px-4 font-medium text-left text-base justify-start">
+            Manage Accounts
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[500px] bg-white">

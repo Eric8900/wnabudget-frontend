@@ -26,37 +26,38 @@ interface AppSidebarProps {
 
 function AppSidebar({ user }: AppSidebarProps) {
   const userId = getUserId();
-  const { data: accounts = [], isLoading : loading } = useAccounts(userId);
-  const refreshAllBudgets  = useRefreshAllBudgets(userId);
+  const { data: accounts = [], isLoading: loading } = useAccounts(userId);
+  const refreshAllBudgets = useRefreshAllBudgets(userId);
   const { refresh: refreshMoneyLeft } = useMoneyLeftActions(userId);
 
   return (
     <div>
       <Sidebar>
-        <SidebarHeader>
+        <SidebarHeader className="bg-text text-text-foreground">
           <div className="flex items-center justify-between p-4">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="text-text text-3xl font-[1000] hover:-rotate-6 hover:scale-110 transition-all tracking-tight">
+              <div className="text-3xl font-[1000] hover:-rotate-6 hover:scale-110 transition-all tracking-tight">
                 WNAB<b className="text-accent">.</b>
               </div>
             </Link>
           </div>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="bg-text text-text-foreground">
 
           {/* Budget Static Button */}
           <div className="p-2 gap-4 flex flex-col">
             <Link href="/app">
-              <button 
-              className="cursor-pointer w-full hover:bg-muted transition-all border border-border rounded-md py-2 px-4 font-medium text-left" 
-              onClick={() => {
-                refreshAllBudgets();
-                refreshMoneyLeft();
-              }}>
+              <Button
+                variant={"ghost"}
+                className="cursor-pointer w-full py-2 px-4 font-medium text-left text-base justify-start"
+                onClick={() => {
+                  refreshAllBudgets();
+                  refreshMoneyLeft();
+                }}>
                 {/* REFRESH BUDGETS ON CLICK so that only when necessary, refresh it */}
                 Budget
-              </button>
+              </Button>
             </Link>
 
             {/* Manage Accounts Button */}
@@ -65,39 +66,41 @@ function AppSidebar({ user }: AppSidebarProps) {
           </div>
 
           {/* Accounts Section */}
-          <SidebarGroup>
-            <SidebarGroupLabel>Accounts</SidebarGroupLabel>
-            <SidebarGroupContent className="flex flex-col space-y-2 h-full">
+          <SidebarGroup className="bg-text text-text-foreground">
+            <SidebarGroupLabel className="bg-text text-text-foreground">Accounts</SidebarGroupLabel>
+            <SidebarGroupContent className="flex flex-col space-y-2 h-full pl-3 mb-5">
               {loading ? (
                 <div className="text-sm px-2">
-                    <AccountsSkeleton/>
+                  <AccountsSkeleton />
                 </div>
               ) : accounts.length ? (
                 accounts.map((account) => (
                   <Link href={`/app/accounts/${account.id}`} key={account.id}>
-                    <div className="flex justify-between text-sm hover:bg-muted px-2 py-3 rounded-xl transition-all">
-                      <span>{account.name}</span>
-                      <span>${account.balance}</span>
-                    </div>
+                    <Button
+                      variant={"ghost"}
+                      className="cursor-pointer w-full py-2 px-4 font-medium text-left text-sm justify-start">
+                      <div className="flex justify-between w-full">
+                        <span>{account.name}</span>
+                        <span>${account.balance}</span>
+                      </div>
+                    </Button>
                   </Link>
                 ))
               ) : (
                 <div className="text-sm px-2">No accounts found.</div>
               )}
-
-              {/* Add Account Button */}
-              <AddAccount userId={userId!} />
-
             </SidebarGroupContent>
+            {/* Add Account Button */}
+            <AddAccount userId={userId!} />
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter>
+        <SidebarFooter className="bg-text text-text-foreground">
           <SidebarGroup>
             <div className="flex items-center gap-2">
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <Profile className="text-text" />
+                  <Profile />
                   <Button
                     variant={"default"}
                     onClick={() => {
@@ -121,7 +124,7 @@ function AppSidebar({ user }: AppSidebarProps) {
           </SidebarGroup>
         </SidebarFooter>
       </Sidebar>
-    </div>
+    </div >
   );
 }
 

@@ -44,7 +44,7 @@ export async function fetchCurrentUser(): Promise<User | null> {
   const token = getAccessToken();
   const userId = getUserId();
 
-  if (!token || !userId) return null;
+  if (!token || !userId || userId == null) return null;
 
   const res = await fetch(`${API_BASE}/users/${userId}`, {
     headers: {
