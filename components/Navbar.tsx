@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ user = false }) => {
                     WNAB<b className="text-accent">.</b>
                 </div>
             </Link>
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-6 z-100">
                 <Link
                     href="/app"
                     className="text-text-foreground hover:text-accent transition-colors font-bold"

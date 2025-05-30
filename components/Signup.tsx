@@ -1,7 +1,7 @@
 "use client";
 
 import { signup } from "@/lib/middleware/auth";
-import { LogIn, Mail, LockIcon } from "lucide-react";
+import { Mail, LockIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -42,16 +42,16 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center rounded-xl z-1 px-2">
-            <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl/10 p-8 flex flex-col items-center border border-accent/50">
+        <div className="min-h-screen w-full flex items-center justify-center z-1 px-2 bg-[#2C396A]">
+            <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl/10 p-8 flex flex-col items-center">
                 <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white mb-6 shadow-lg/5">
-                    <LogIn className="w-7 h-7" />
+                    <Image className="w-14 h-14" src={"/apple-touch-icon.png"} width={512} height={512} alt={""} />
                 </div>
                 <h2 className="text-2xl font-bold mb-2 text-center">
                     Sign up with email
                 </h2>
                 <p className="text-gray-500 text-sm mb-6 text-center">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus, numquam.
+                    WNAB will help you learn to spend, save, and live joyfully with a simple set of life-changing habits.
                 </p>
                 <div className="w-full flex flex-col gap-3 mb-2">
                     <div className="relative">
@@ -85,7 +85,7 @@ export default function Signup() {
                 </div>
                 <button
                     onClick={handleSignIn}
-                    className="w-full bg-primary font-medium py-2 rounded-xl shadow hover:brightness-105 cursor-pointer transition mb-4 mt-2"
+                    className="w-full bg-secondary text-text-foreground font-medium py-2 rounded-xl shadow hover:brightness-105 cursor-pointer transition mb-4 mt-2"
                 >
                     Sign Up
                 </button>
